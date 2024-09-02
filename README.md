@@ -47,13 +47,11 @@ Node.js, Express, MongoDB, Mongoose
 
   
 - **Updating User Details:**
-![Uploading image.png…]()
-
+  ![image](https://github.com/user-attachments/assets/024b5015-9389-40ec-b749-0d9faf9a7e4f)
 
 
 - **Register Page:**
 ![image](https://github.com/user-attachments/assets/454b224c-43b4-4198-a19c-4ee5fa0fef4b)
-
 
 
 
