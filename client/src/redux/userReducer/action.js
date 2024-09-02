@@ -12,7 +12,7 @@ import {
   LOGIN_FAILURE,
 } from "../actionTypes";
 import { toast } from "react-toastify";
-let baseUrl = "http://localhost:8000/api/users";
+let baseUrl = "https://user-registration-system.onrender.com/api/users";
 
 export const postUser = (newUser) => (dispatch) => {
   dispatch({ type: USERS_REQUEST });
