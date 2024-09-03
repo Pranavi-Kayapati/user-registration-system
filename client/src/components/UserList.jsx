@@ -230,6 +230,9 @@ const UserList = () => {
                   <SkeletonText mt="4" noOfLines={1} skeletonHeight="20px" />
                 </Td>
                 <Td>
+                  <SkeletonText mt="4" noOfLines={1} skeletonHeight="20px" />
+                </Td>
+                <Td>
                   <Popover placement="left-start">
                     <PopoverTrigger>
                       <Button variant={"text"} isDisabled>

@@ -107,7 +107,7 @@ const UserModal = ({ isOpen, onClose, onSubmit, user = {} }) => {
 
             <ModalFooter>
               <Button colorScheme="blue" mr={3} type="submit">
-                {user?.id ? "Save Changes" : "Add User"}
+                Save Changes
               </Button>
               <Button variant="ghost" onClick={handleCancel}>
                 Cancel
