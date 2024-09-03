@@ -114,7 +114,7 @@ export const updateUser = (newData, id) => (dispatch) => {
     .put(`${baseUrl}/update/${id}`, newData)
     .then((res) => {
       console.log("object", res);
-      dispatch({ type: PATCH_USERS_SUCCESS, payload: res.user });
+      dispatch({ type: PATCH_USERS_SUCCESS, payload: res.data.user });
       console.log(res);
       console.log("Updated user :", res.data);
       toast.success("📝 User details updated successfully!", {
