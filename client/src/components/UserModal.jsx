@@ -58,7 +58,7 @@ const UserModal = ({ isOpen, onClose, onSubmit, user = {} }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{user?.id ? "Edit User" : "Add New User"}</ModalHeader>
+        <ModalHeader>Edit User Details</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit}>
