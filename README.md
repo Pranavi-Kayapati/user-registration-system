@@ -38,7 +38,7 @@ Node.js, Express, MongoDB, Mongoose
 - **User Login:** Users can log in with email and password, with error handling for incorrect credentials.
 - **Profile Management:** Users can view and edit their profile information.
 - **Notifications:** Visual feedback through React Toastify for actions like registration, login, and profile updates.
-- **Users :** Implemented users listing and sorting and search by name functionalities.
+- **Users :** Implemented users listing and sorting and search by name and pagination functionalities.
 
 ### UI Sample Images
 
