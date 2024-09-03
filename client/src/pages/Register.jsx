@@ -30,19 +30,20 @@ const Register = () => {
 
     dispatch(postUser(formData))
       .then(() => {
-        console.log("Registration successful");
+        console.log("isError", isError, error);
+        if (!isError) {
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
 
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
-
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          phone: "",
-          profession: "",
-        });
+          setFormData({
+            name: "",
+            email: "",
+            password: "",
+            phone: "",
+            profession: "",
+          });
+        }
       })
       .catch((error) => {
         console.error("Error during registration:", error);

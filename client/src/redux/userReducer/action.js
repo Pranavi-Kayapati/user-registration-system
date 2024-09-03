@@ -45,42 +45,44 @@ export const postUser = (newUser) => (dispatch) => {
       });
     });
 };
-
-export const loginUser = (user) => async (dispatch) => {
+export const loginUser = (user) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
 
-  try {
-    const response = await axios.post(`${baseUrl}/login`, user);
-    const { token } = response.data;
-    localStorage.setItem("authToken", token);
+  return axios
+    .post(`${baseUrl}/login`, user)
+    .then((response) => {
+      const { token } = response.data;
+      localStorage.setItem("authToken", token);
 
-    dispatch({ type: LOGIN_SUCCESS, payload: { token } });
+      dispatch({ type: LOGIN_SUCCESS, payload: { token } });
 
-    toast.success("Login successful!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  } catch (error) {
-    dispatch({
-      type: LOGIN_FAILURE,
-      payload: error.response.data.error || "Login failed",
-    });
+      toast.success("Login successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch({
+        type: LOGIN_FAILURE,
+        payload: error.response?.data?.error || "Login failed",
+      });
 
-    toast.error(`🚨${error.response.data.error || "Login failed"}`, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
+      toast.error(`🚨${error.response?.data?.error || "Login failed"}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     });
-  }
 };
 
 export const getUser = (paramsObj) => (dispatch) => {

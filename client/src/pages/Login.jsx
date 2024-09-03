@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/userReducer/action";
+import { Spinner } from "@chakra-ui/react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,9 @@ const Login = () => {
   });
   let dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isLoading, isAuthenticated, isError, error } = useSelector(
+    (store) => store.authReducer
+  );
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,11 +22,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(formData));
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
-    setFormData({ email: "", password: "" });
+    dispatch(loginUser(formData)).then(() => {
+      if (!isError) {
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+        setFormData({ email: "", password: "" });
+      }
+    });
   };
 
   return (
@@ -48,39 +55,48 @@ const Login = () => {
                 <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                   <p className="text-center h1 fw-bold mb-5">Login</p>
                   <form onSubmit={handleSubmit}>
-                    <div className="form-outline mb-4">
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="form-control form-control-lg"
-                        placeholder="Enter a valid email address"
-                      />
+                    <div className="d-flex flex-row align-items-center mb-4 w-100">
+                      <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                      <div className="form-outline">
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="form-control form-control-lg w-100"
+                          placeholder="Enter email address"
+                          required
+                        />
+                      </div>
                     </div>
-
-                    <div className="form-outline mb-3">
-                      <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="form-control form-control-lg"
-                        placeholder="Enter password"
-                      />
+                    <div className="d-flex flex-row align-items-center mb-4">
+                      <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
+                      <div className="form-outline ">
+                        <input
+                          type="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          className="form-control form-control-lg"
+                          placeholder="Enter password"
+                          required
+                        />
+                      </div>
                     </div>
+                    {isError && <p className="text-danger">{error}</p>}
 
                     <div className="text-center text-lg-start mt-4 pt-2">
                       <button
                         type="submit"
-                        className="btn btn-primary btn-lg"
+                        className="btn btn-primary btn-lg w-100"
                         style={{
                           paddingLeft: "2.5rem",
                           paddingRight: "2.5rem",
                         }}
                       >
-                        Login
+                        {isLoading ? <Spinner /> : "Login"}
                       </button>
+
                       <p className="small fw-bold mt-2 pt-1 mb-0">
                         Don't have an account?{" "}
                         <a href="/register" className="link-danger">
