@@ -16,7 +16,7 @@ let baseUrl = "https://user-registration-system.onrender.com/api/users";
 
 export const postUser = (newUser) => (dispatch) => {
   dispatch({ type: USERS_REQUEST });
-  axios
+  return axios
     .post(`${baseUrl}/register`, newUser)
     .then((res) => {
       dispatch({ type: POST_USERS_SUCCESS, payload: res.data });
@@ -32,9 +32,9 @@ export const postUser = (newUser) => (dispatch) => {
       });
     })
     .catch((err) => {
-      console.log(err);
-      dispatch({ type: USERS_FAILURE, payload: err.message });
-      toast.error(`🚨${err.message}`, {
+      console.log("Regiser", err);
+      dispatch({ type: USERS_FAILURE, payload: err.response.data.error });
+      toast.error(`🚨${err.response.data.error}`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,

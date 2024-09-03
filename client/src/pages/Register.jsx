@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { postUser } from "../redux/userReducer/action";
 import { toast } from "react-toastify";
+import { Spinner } from "@chakra-ui/react";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,9 @@ const Register = () => {
     phone: "",
     profession: "",
   });
+  const { isLoading, isError, error } = useSelector(
+    (store) => store.userReducer
+  );
 
   const navigate = useNavigate();
   let dispatch = useDispatch();
@@ -21,20 +25,28 @@ const Register = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(postUser(formData));
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      phone: "",
-      profession: "",
-    });
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+
+    dispatch(postUser(formData))
+      .then(() => {
+        console.log("Registration successful");
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          phone: "",
+          profession: "",
+        });
+      })
+      .catch((error) => {
+        console.error("Error during registration:", error);
+      });
   };
 
   return (
@@ -59,6 +71,7 @@ const Register = () => {
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Name"
+                            required
                           />
                         </div>
                       </div>
@@ -73,6 +86,7 @@ const Register = () => {
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Email"
+                            required
                           />
                         </div>
                       </div>
@@ -87,6 +101,7 @@ const Register = () => {
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Password"
+                            required
                           />
                         </div>
                       </div>
@@ -101,6 +116,7 @@ const Register = () => {
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Phone Number"
+                            required
                           />
                         </div>
                       </div>
@@ -115,40 +131,21 @@ const Register = () => {
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Profession"
+                            required
                           />
                         </div>
                       </div>
 
-                      <div className="form-check d-flex justify-content-center mb-3">
-                        <input
-                          className="form-check-input me-2"
-                          type="checkbox"
-                          id="form2Example3c"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="form2Example3"
-                        >
-                          I agree to all statements in{" "}
-                          <a href="#!">Terms of service</a>
-                        </label>
-                      </div>
+                      {isError && <p className="text-danger">{error}</p>}
 
                       <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                         <button
                           type="submit"
-                          className="btn btn-primary btn-lg"
+                          className="btn btn-primary btn-lg w-100"
                         >
-                          Register
+                          {isLoading ? <Spinner /> : "Register"}
                         </button>
                       </div>
-
-                      {/* {success && (
-                        <div className="alert alert-success">{success}</div>
-                      )}
-                      {error && (
-                        <div className="alert alert-danger">{error}</div>
-                      )} */}
                     </form>
                   </div>
                   <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">

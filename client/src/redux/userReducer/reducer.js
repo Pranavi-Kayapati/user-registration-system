@@ -27,6 +27,8 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         isLoading: false,
+        isError: false,
+        error: "",
         users: [...state.users, payload],
       };
     }
