@@ -92,7 +92,7 @@ userRouter.post("/login", async (req, res) => {
     console.log("Password Match:", isMatch);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ error: "Invalid credentials" });
     }
 
     const token = jwt.sign({ userID: user._id, user: user.name }, "user", {
