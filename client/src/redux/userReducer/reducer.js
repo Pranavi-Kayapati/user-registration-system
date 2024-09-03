@@ -41,7 +41,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     }
     case PATCH_USERS_SUCCESS: {
       const updatedUsers = state.users.map((user) =>
-        user._id === payload._id ? payload : user
+        user?._id === payload?._id ? payload : user
       );
       return {
         ...state,

@@ -113,6 +113,7 @@ export const updateUser = (newData, id) => (dispatch) => {
   return axios
     .put(`${baseUrl}/update/${id}`, newData)
     .then((res) => {
+      console.log("object", res);
       dispatch({ type: PATCH_USERS_SUCCESS, payload: res.user });
       console.log(res);
       console.log("Updated user :", res.data);
@@ -128,7 +129,7 @@ export const updateUser = (newData, id) => (dispatch) => {
     })
     .catch((err) => {
       dispatch({ type: USERS_FAILURE, payload: err.message });
-      console.log(err.message);
+      console.log(err);
       toast.error(`🚨${err.message}`, {
         position: "top-right",
         autoClose: 3000,
