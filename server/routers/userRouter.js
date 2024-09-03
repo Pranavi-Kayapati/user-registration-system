@@ -5,10 +5,6 @@ const jwt = require("jsonwebtoken");
 const auth = require("../middlewares/auth");
 const userRouter = express.Router();
 
-// userRouter.get("/", (req, res) => {
-//   res.send("Users getting");
-// });
-
 userRouter.get("/", async (req, res) => {
   try {
     const users = await User.find();
@@ -18,35 +14,12 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
-// userRouter.get("/users", auth, async (req, res) => {
-//   try {
-//     const { name, email, profession, sortBy, sortOrder = "asc" } = req.query;
-
-//     // Build the filter object
-//     const filter = {};
-//     if (name) filter.name = new RegExp(name, "i"); // Case-insensitive search
-//     if (email) filter.email = new RegExp(email, "i");
-//     if (profession) filter.profession = new RegExp(profession, "i");
-
-//     // Build the sort object
-//     const sort = {};
-//     if (sortBy) {
-//       sort[sortBy] = sortOrder === "desc" ? -1 : 1;
-//     }
-
-//     // Fetch users with filters and sorting
-//     const users = await User.find(filter).sort(sort);
-//     res.status(200).json(users);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
-
 userRouter.post("/register", async (req, res) => {
   const { name, email, password, phone, profession } = req.body;
   const uppercaseRegex = /[A-Z]/;
   const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
   const numericalRegex = /[0-9]/;
+  const phoneRegex = /^\d{10}$/;
 
   if (password.length < 6) {
     return res
@@ -72,19 +45,19 @@ userRouter.post("/register", async (req, res) => {
       .json({ error: "Password must have at least one number." });
   }
 
+  if (!phoneRegex.test(phone)) {
+    return res
+      .status(400)
+      .json({ error: "Phone number must be exactly 10 digits." });
+  }
+
   try {
     const emailExist = await User.findOne({ email });
     if (emailExist) {
       return res
         .status(400)
-        .json({ msg: "User with this email already exists." });
+        .json({ error: "User with this email already exists." });
     }
-
-    // Hash the password
-    // const hashedPassword = await bcrypt.hash(password, 2);
-
-    // // Log the hashed password to ensure it's hashed properly
-    // console.log("Hashed Password:", hashedPassword);
 
     const user = new User({
       name,
@@ -94,7 +67,7 @@ userRouter.post("/register", async (req, res) => {
       profession,
     });
     await user.save();
-    res.status(201).json({ msg: "User successfully registered", user });
+    res.status(201).json({ message: "User successfully registered", user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -109,23 +82,23 @@ userRouter.post("/login", async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ msg: "User does not exist, please register." });
+        .json({ error: "User does not exist, please register." });
     }
 
     console.log("Entered Password:", password);
     console.log("Stored Hashed Password:", user.password);
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password Match:", isMatch); // Log if the passwords match
+    console.log("Password Match:", isMatch);
 
     if (!isMatch) {
-      return res.status(400).json({ msg: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign({ userID: user._id, user: user.name }, "user", {
       expiresIn: "1h",
     });
-    res.status(200).json({ msg: "User logged in", token });
+    res.status(200).json({ message: "User logged in", token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -138,7 +111,7 @@ userRouter.put("/update/:id", async (req, res) => {
   try {
     const user = await User.findById({ _id: userId });
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
     user.name = name || user.name;
@@ -147,7 +120,7 @@ userRouter.put("/update/:id", async (req, res) => {
     user.profession = profession || user.profession;
 
     await user.save();
-    res.status(200).json({ msg: "User updated", user });
+    res.status(200).json({ message: "User updated", user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -159,9 +132,9 @@ userRouter.delete("/delete/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete({ _id: userId });
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json({ msg: "User deleted" });
+    res.status(200).json({ message: "User deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
